@@ -11,6 +11,7 @@ def define_model_params(
     args = ArgumentParser()
     args.add_argument(
         "--month",
+        required=True,
         type=int,
     )
     args = args.parse_args()
