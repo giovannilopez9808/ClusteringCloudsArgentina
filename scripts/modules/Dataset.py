@@ -171,9 +171,9 @@ class _MonthDavisDataset:
         columns_to_use = [
             "WindSpeed",
             "WindDir",
-            "TempOut",
+            # "TempOut",
             "OutHum",
-            "Rain",
+            # "Rain",
             "Bar",
         ]
         data = data[columns_to_use]

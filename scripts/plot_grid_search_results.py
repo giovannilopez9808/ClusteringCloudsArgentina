@@ -60,7 +60,7 @@ for i, covariance_type in enumerate(covariance_types):
     )
 pyplot.ylim(
     0,
-    350000,
+    250000,
 )
 pyplot.legend(
     ncols=4,
@@ -86,12 +86,12 @@ for i, algorithm_type in enumerate(algorithm_types):
     ax.bar(
         _data["param_n_clusters"]+0.2*i,
         _data["mean_test_score"],
-        label=algorithm_type,
+        label=covariance_type,
         width=0.2
     )
 pyplot.ylim(
     0,
-    180000,
+    120000,
 )
 pyplot.legend(
     ncols=2,

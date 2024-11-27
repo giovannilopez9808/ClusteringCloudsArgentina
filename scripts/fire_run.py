@@ -51,9 +51,9 @@ data = davis_data.join(
 )
 statistics = data.groupby("Cluster").describe()
 columns_to_check = [
-    "TempOut",
+    # "TempOut",
     "OutHum",
-    "Rain",
+    # "Rain",
     "NI",
 ]
 for column in columns_to_check:

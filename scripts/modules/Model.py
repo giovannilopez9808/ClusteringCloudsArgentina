@@ -13,7 +13,7 @@ class ClusterModel:
         month: int,
     ) -> None:
         self.model: KMeans = None
-        self.n_clusters = 8
+        self.n_clusters = 4
         self.month = month
 
     def _define_model(
