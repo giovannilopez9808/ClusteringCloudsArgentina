@@ -13,7 +13,7 @@ class ClusterModel:
         month: int,
     ) -> None:
         self.model: KMeans = None
-        self.n_clusters = 4
+        self.n_clusters = 3
         self.month = month
 
     def _define_model(
@@ -22,6 +22,10 @@ class ClusterModel:
         model = KMeans(
             n_clusters=self.n_clusters,
         )
+        # model = GaussianMixture(
+        # n_components=self.n_clusters,
+        # covariance_type="diag",
+        # )
         return model
 
     def train(

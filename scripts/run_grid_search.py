@@ -1,8 +1,8 @@
 from modules.functions import define_grid_search_params
 from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import silhouette_score
 from sklearn.mixture import GaussianMixture
 from modules.Dataset import DavisDataset
-from modules.Model import ClusterModel
 from modules.params import get_params
 from sklearn.cluster import KMeans
 from scipy.spatial import distance
@@ -32,61 +32,19 @@ def BIC_Gaussian(
     return estimator.bic(X)
 
 
-def BIC_Kmeans(
+def silhouette_score_grid_search(
     estimator: Callable,
     X: array,
 ) -> array:
-    """
-    Computes the BIC metric for a given clusters
-
-    Parameters:
-    -----------------------------------------
-    kmeans:  List of clustering object from scikit learn
-
-    X     :  multidimension np array of data points
-
-    Returns:
-    -----------------------------------------
-    BIC value
-    """
-    # assign centers and labels
-    centers = estimator.cluster_centers_
-    # labels = estimator.labels_
-    labels = estimator.predict(
+    cluster = estimator.predict(X)
+    score = silhouette_score(
+        X,
+        cluster,
+    )
+    score = estimator.score(
         X,
     )
-    # number of clusters
-    m = estimator.n_clusters
-    # size of the clusters
-    n = bincount(labels)
-    # size of data set
-    N, d = X.shape
-    # labels = labels[:N]
-
-    # compute variance for all clusters beforehand
-    cl_var = (1.0 / (N - m) / d) * sum(
-        [
-            sum(
-                distance.cdist(
-                    X[where(labels == i)],
-                    [centers[i]],
-                    'euclidean'
-                )**2
-            ) for i in range(m)
-        ])
-
-    const_term = 0.5 * m * log(N) * (d+1)
-
-    BIC = sum(
-        [
-            n[i] * log(n[i]) -
-            n[i] * log(N) -
-            ((n[i] * d) / 2) * log(2*pi*cl_var) -
-            ((n[i] - 1) * d / 2) for i in range(m)
-        ]
-    ) - const_term
-
-    return -BIC
+    return -score
 
 
 def get_grid_search_inputs(
@@ -104,7 +62,7 @@ def get_grid_search_inputs(
         param_grid = {
             "n_components": range(
                 2,
-                9,
+                7,
             ),
             "covariance_type": [
                 "spherical",
@@ -126,7 +84,7 @@ def get_grid_search_inputs(
                 "elkan",
             ]
         }
-        score = BIC_Kmeans
+        score = silhouette_score_grid_search
     return model_class, param_grid, score
 
 

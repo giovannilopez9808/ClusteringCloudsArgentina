@@ -52,32 +52,37 @@ for cluster in range(
         label=cluster,
     )
 pyplot.xlim(
-    -25,
-    35,
+    -15,
+    20,
 )
 pyplot.xticks(
     range(
-        -25,
-        40,
+        -15,
+        25,
         5,
     )
 )
 pyplot.ylim(
-    -30,
+    -25,
     25,
 )
 pyplot.yticks(
     range(
-        -30,
+        -25,
         30,
         5,
     )
 )
 pyplot.xlabel(
-    "Componente X de la velocidad del viento (m/s)",
+    "Velocidad del viento (m/s)",
+    fontsize=14,
 )
 pyplot.ylabel(
-    "Componente Y de la velocidad del viento (m/s)",
+    "Velocidad del viento (m/s)",
+    fontsize=14,
+)
+pyplot.tick_params(
+    labelsize=12,
 )
 pyplot.legend(
     ncol=model.n_clusters,

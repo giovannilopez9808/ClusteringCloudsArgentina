@@ -4,6 +4,7 @@ from modules.functions import define_model_params
 from matplotlib import pyplot
 from pandas import concat, to_datetime
 from modules.Dataset import (
+    DavisDatasetComplete,
     DavisDataset,
     FireDataset,
 )
@@ -15,20 +16,14 @@ dataset = DavisDataset(
     params,
     args.month,
 )
+dataset_complete = DavisDatasetComplete(
+    params,
+    args.month,
+)
+davis_data_complete = dataset_complete.get_data()
 davis_data = dataset.get_data()
-# davis_data = davis_data.resample("D").mean()
-# davis_data = davis_data.dropna()
 data_input = davis_data.to_numpy()
-# mean_ = min(
-# data_input,
-# axis=0,
-# )
-# std_ = max(
-# data_input,
-# axis=0,
-# )
-# data_input = (data_input-mean_)/(std_-mean_)
-davis_data["Date"] = to_datetime([
+davis_data_complete["Date"] = to_datetime([
     date.date()
     for date in davis_data.index
 
@@ -36,6 +31,10 @@ davis_data["Date"] = to_datetime([
 fire_data = FireDataset()
 fire_data = fire_data.get_data()
 fire_data["Date"] = fire_data.index.date
+fire_data = fire_data[
+    (fire_data.index.month >= 7) &
+    (fire_data.index.month <= 8)
+]
 model = ClusterModel(
     args.month
 )
@@ -43,8 +42,8 @@ model.load()
 prediction = model.run(
     data_input,
 )
-davis_data["Cluster"] = prediction
-data = davis_data.join(
+davis_data_complete["Cluster"] = prediction
+data = davis_data_complete.join(
     fire_data,
     rsuffix="_b",
     on="Date",
@@ -53,7 +52,7 @@ statistics = data.groupby("Cluster").describe()
 columns_to_check = [
     # "TempOut",
     "OutHum",
-    # "Rain",
+    "Rain",
     "NI",
 ]
 for column in columns_to_check:

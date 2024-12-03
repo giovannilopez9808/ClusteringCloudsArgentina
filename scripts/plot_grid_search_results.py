@@ -51,20 +51,32 @@ for i, covariance_type in enumerate(covariance_types):
         gaussian["param_covariance_type"] == covariance_type
     ]
     i -= len(covariance_types)//2
-    print(_data)
     ax.bar(
         _data["param_n_components"]+0.2*i,
         _data["mean_test_score"],
         label=covariance_type,
         width=0.2
     )
+pyplot.xlabel(
+    "Número de clusters",
+    fontsize=14,
+)
+pyplot.ylabel(
+    "BIC",
+    fontsize=14,
+)
 pyplot.ylim(
-    0,
-    250000,
+    150000,
+    230000,
 )
 pyplot.legend(
+    frameon=False,
     ncols=4,
 )
+pyplot.tick_params(
+    labelsize=12,
+)
+pyplot.tight_layout()
 pyplot.savefig(
     "gaussian.png"
 )
@@ -82,20 +94,39 @@ for i, algorithm_type in enumerate(algorithm_types):
         kmeans["param_algorithm"] == algorithm_type
     ]
     i -= len(algorithm_types)//2
-    print(_data)
+    if algorithm_type == "elkan":
+        color = "#7209b7"
+    else:
+        color = "#4895ef"
     ax.bar(
         _data["param_n_clusters"]+0.2*i,
-        _data["mean_test_score"],
-        label=covariance_type,
-        width=0.2
+        _data["mean_test_score"]/len(kmeans),
+        label=algorithm_type.capitalize(),
+        color=color,
+        width=0.2,
+
     )
+pyplot.xlabel(
+    "Número de cluster",
+    fontsize=14,
+)
+pyplot.ylabel(
+    "Distancia cuadrática media",
+    fontsize=14,
+)
 pyplot.ylim(
     0,
-    120000,
+    600000,
+)
+pyplot.tick_params(
+    labelsize=12,
 )
 pyplot.legend(
+    frameon=False,
+    fontsize=13,
     ncols=2,
 )
+pyplot.tight_layout()
 pyplot.savefig(
     "kmeans.png"
 )

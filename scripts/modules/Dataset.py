@@ -71,6 +71,10 @@ class DavisDataset:
                 month_data,
             ])
         if month == 0:
+            data = data[
+                (data.index.month >= 7) &
+                (data.index.month <= 8)
+            ]
             return data
         data = data[
             data.index.month == month
@@ -173,8 +177,8 @@ class _MonthDavisDataset:
             "WindDir",
             # "TempOut",
             "OutHum",
-            # "Rain",
-            "Bar",
+            "Rain",
+            # "Bar",
         ]
         data = data[columns_to_use]
         return data
@@ -227,3 +231,82 @@ class _MonthDavisDataset:
         self,
     ) -> DataFrame:
         return self.data
+
+
+class DavisDatasetComplete(
+    DavisDataset
+):
+    def __init__(
+        self,
+        params: dict,
+        month: int,
+    ) -> None:
+        super().__init__(
+            params,
+            month,
+        )
+
+    def _read(
+        self,
+        params: dict,
+        month: int,
+    ) -> DataFrame:
+        folder = join(
+            params["data_path"],
+            "Davis",
+        )
+        files = ls(
+            folder,
+        )
+        data = DataFrame()
+        for file in files:
+            filename = join(
+                folder,
+                file,
+            )
+            month_dataset = _MonthDavisDatasetComplete(
+                filename,
+            )
+            self.direction_to_degree = month_dataset.direction_to_degree
+            month_data = month_dataset.get_data()
+            data = concat([
+                data,
+                month_data,
+            ])
+        if month == 0:
+            data = data[
+                (data.index.month >= 7) &
+                (data.index.month <= 8)
+            ]
+            return data
+        data = data[
+            data.index.month == month
+        ]
+        return data
+
+
+class _MonthDavisDatasetComplete(
+    _MonthDavisDataset
+):
+    def __init__(
+        self,
+        filename: str,
+    ) -> None:
+        super().__init__(
+            filename,
+        )
+
+    def _select_columns_to_use(
+        self,
+        data: DataFrame,
+    ) -> DataFrame:
+        columns_to_use = [
+            "WindSpeed",
+            "WindDir",
+            # "TempOut",
+            "OutHum",
+            "Rain",
+            # "Bar",
+        ]
+        data = data[columns_to_use]
+        return data
